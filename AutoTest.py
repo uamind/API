@@ -25,7 +25,7 @@
 import unittest # 单元测试框架
 import requests # HTTP请求库
 
-SERVER_URL = 'http://localhost:8080'
+SERVER_URL = 'http://localhost:80'
 
 # 定义测试用例类：TestStudentAPI，继承自unittest.TestCase
 class TestStudentAPI(unittest.TestCase):
@@ -85,15 +85,15 @@ class TestStudentAPI(unittest.TestCase):
         self.assertEqual(len(requests.get(SERVER_URL + '/students').json()), 4) #判断添加学生记录成功之后，学生记录总数是否增加
         # 测试非法数据：数据格式不正确
         response = requests.post(SERVER_URL + '/students', json={'invalid': 'data'})
-        self.assertEqual(response.status_code, 401) #判断返回的状态码是否为 401
+        self.assertEqual(response.status_code, 400) #判断返回的状态码是否为 400
         self.assertEqual(response.json()['msg'], 'Missing required fields') #判断返回的消息是否正确
         # 测试非法数据：缺少必要字段
         response = requests.post(SERVER_URL + '/students', json={'id': 5, 'name': 'Eve'})
-        self.assertEqual(response.status_code, 401) #判断返回的状态码是否为 401
+        self.assertEqual(response.status_code, 400) #判断返回的状态码是否为 400
         self.assertEqual(response.json()['msg'], 'Missing required fields') #判断返回的消息是否正确
         # 测试非法数据：ID 已存在
         response = requests.post(SERVER_URL + '/students', json={'id': 4, 'name': 'David', 'age': 22})
-        self.assertEqual(response.status_code, 402) #判断返回的状态码是否为 402
+        self.assertEqual(response.status_code, 400) #判断返回的状态码是否为 400
         self.assertEqual(response.json()['msg'], 'Student with this ID already exists') #判断返回的消息是否正确
 
     # 测试删除学生信息功能是否正常
@@ -108,8 +108,23 @@ class TestStudentAPI(unittest.TestCase):
         # 测试 ID 不存在时报错
         data = {"id" : "6"}
         response = requests.delete(SERVER_URL + '/students', data=data)
-        self.assertEqual(response.status_code, 404) #判断返回的状态码是否为 404
+        self.assertEqual(response.status_code, 400) #判断返回的状态码是否为 400
         self.assertEqual(response.json()['msg'], 'Student not found') #判断返回的消息是否正确
+        # 删除后再次查找该学生信息，应该不存在
+        data = {"id" : "1"}
+        response = requests.get('/students', data=data)
+        self.assertEqual(response.status_code, 200) #判断返回的状态码是否为 200
+        self.assertEqual(len(response.json) == 0) #判断返回的数据中是否为空列表
+        # 测试传递非数字 ID 时是否能够正确返回错误信息
+        data = {"id" : "abc"}
+        response = requests.delete(SERVER_URL + '/students', data=data)
+        self.assertEqual(response.status_code, 400) #判断返回的状态码是否为 400
+        self.assertEqual(response.json()['msg'], 'Invalid ID') #判断返回的消息是否正确
+        # 测试未传递 ID 时是否能够正确返回错误信息
+        response = requests.delete(SERVER_URL + '/students')
+        self.assertEqual(response.status_code, 400) #判断返回的状态码是否为 400
+        self.assertEqual(response.json()['msg'], 'Missing required fields') #判断返回的消息是否正确
+
 
     # 获取一个不存在的学生ID，在已存在的学生ID中随机选择
     def _get_nonexistent_student_id(self):

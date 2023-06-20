@@ -89,12 +89,12 @@ def add_student():
     if not new_student:
         return jsonify({'msg': 'Invalid data format'}), 400
     if not all(key in new_student for key in ('id', 'name', 'age')):
-        return jsonify({'msg': 'Missing required fields'}), 401
+        return jsonify({'msg': 'Missing required fields'}), 400
 
     # 检查学生是否已存在
     for student in students:
         if student['id'] == new_student['id']:
-            return jsonify({'msg': 'Student with this ID already exists'}), 402
+            return jsonify({'msg': 'Student with this ID already exists'}), 400
 
     # 添加新学生到学生列表
     students.append(new_student)
@@ -111,11 +111,11 @@ def delete_student():
 
     # 检查参数是否存在或者格式是否正确
     if not student_id:
-        return jsonify({'msg': 'Missing required fields'}), 401
+        return jsonify({'msg': 'Missing required fields'}), 400
     try:
         student_id = int(student_id)
     except ValueError:
-        return jsonify({'msg': 'Invalid ID format'}), 402
+        return jsonify({'msg': 'Invalid ID format'}), 400
 
     # 在学生列表中查找要删除的学生
     for i, student in enumerate(students):
@@ -124,10 +124,10 @@ def delete_student():
             return jsonify({'msg': 'Student deleted successfully'})
 
     # 如果未找到要删除的学生，则返回错误信息
-    return jsonify({'msg': 'Student not found'}), 404
+    return jsonify({'msg': 'Student not found'}), 400
 
 
 
 # 启动应用
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    app.run(host='0.0.0.0', port=80, debug=True)
