@@ -6,17 +6,12 @@
 @Author  :   CryMang 
 @Version :   1.0
 @Contact :   uamind@foxmail.com
-
 @License :   GPL v3.0 (https://www.gnu.org/licenses/gpl-3.0.html)
-
 @Description :
 该软件受GNU通用公共许可证（GPL）保护。
-
 如果您使用本软件，则必须符合GPL下的条款，
 可以在以下位置查看完整许可证文本：
-
     https://www.gnu.org/licenses/gpl-3.0.html
-
 或者通过向Free Software Foundation, Inc.发送请求获得。
 '''
 
@@ -33,18 +28,18 @@ app.config['MAX_CONTENT_LENGTH'] = 256 * 20
 
 # 初始化学生列表
 students = [
-    {'id': 1, 'name': 'Alice', 'age': 18},
-    {'id': 2, 'name': 'Bob', 'age': 19},
-    {'id': 3, 'name': 'Charlie', 'age': 20},
+    {'id': 1, '名字': '张三', '年龄': 18},
+    {'id': 2, '名字': '李四', '年龄': 19},
+    {'id': 3, '名字': '王五', '年龄': 20},
 ]
 
 # 主页路由
 @app.route('/')
 def home():
     # 生成包含所有学生信息的 HTML 表格
-    table_html = '<table><thead><tr><th>ID</th><th>Name</th><th>Age</th></tr></thead><tbody>'
+    table_html = '<table><thead><tr><th>ID</th><th>名字</th><th>年龄</th></tr></thead><tbody>'
     for student in students:
-        table_html += '<tr><td>{}</td><td>{}</td><td>{}</td></tr>'.format(student['id'], student['name'], student['age'])
+        table_html += '<tr><td>{}</td><td>{}</td><td>{}</td></tr>'.format(student['id'], student['名字'], student['年龄'])
     table_html += '</tbody></table>'
 
     # 返回包含学生信息的页面
@@ -88,7 +83,7 @@ def add_student():
     # 检查请求格式是否正确
     if not new_student:
         return jsonify({'msg': 'Invalid data format'}), 400
-    if not all(key in new_student for key in ('id', 'name', 'age')):
+    if not all(key in new_student for key in ('id', '名字', '年龄')):
         return jsonify({'msg': 'Missing required fields'}), 400
 
     # 检查学生是否已存在
