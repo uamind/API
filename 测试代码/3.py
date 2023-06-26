@@ -31,7 +31,11 @@ proxies = {
     'https': 'https://127.0.0.1:8080'
 }
 
-response = requests.get(url=SERVER_URL + '/students' + '?' + 'id=4', proxies=proxies)
+data = {
+    "id" : 4
+}
+
+response = requests.get(url=SERVER_URL + '/students', data=data, proxies=proxies)
 
 print(f'状态码：{response.status_code}')
 print(f'结果：{response.json()}')

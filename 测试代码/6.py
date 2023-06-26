@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+    #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 '''
 @File    :   6.py
@@ -22,6 +22,7 @@
 
 # Here put the import libraries
 import requests
+import json
 
 SERVER_URL = 'http://127.0.0.1'
 
@@ -31,12 +32,18 @@ proxies = {
     'https': 'https://127.0.0.1:8080'
 }
 
-json = {
+data = {
     "id": 5,
     "名字": "孙七"
 }
 
-response = requests.post(url=SERVER_URL + '/students', json=json, proxies=proxies)
+json_data = json.dumps(data, ensure_ascii=False)
+
+headers = {
+    'Content-Type': 'application/json; charset=utf-8'
+}
+
+response = requests.post(url=SERVER_URL + '/students', data=json_data.encode('utf-8'), headers=headers, proxies=proxies)
 
 print(f'状态码：{response.status_code}')
 print(f'结果：{response.text}')

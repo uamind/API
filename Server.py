@@ -17,14 +17,17 @@
 
 # Here put the import libraries
 # 导入 Flask 应用及相关模块
-from asyncio.windows_events import NULL
 from flask import Flask, request, jsonify
+import json
 
 # 创建 Flask 应用实例
 app = Flask(__name__)
 
-# 设置最大 token 数量为 2048
-app.config['MAX_CONTENT_LENGTH'] = 256 * 20
+#禁止ASCII码
+app.config['JSON_AS_ASCII'] = False
+
+# 指定浏览器渲染的文件类型，和解码格式
+app.config['JSONIFY_MIMETYPE'] = "application/json;charset=utf-8"  
 
 # 初始化学生列表
 students = [
@@ -71,7 +74,9 @@ def get_students():
         filtered_students = students
 
     # 返回筛选后的学生信息（JSON 格式）
-    return jsonify(filtered_students)
+    data = filtered_students
+    sjson = json.dumps(data,ensure_ascii=False).encode('utf-8')
+    return sjson
 
 # 处理添加学生信息的函数
 @app.route('/students', methods=['POST'])
